@@ -1,3 +1,6 @@
+//Import to check OS
+import org.gradle.internal.os.OperatingSystem;
+
 task wrapper(type: Wrapper) {
     gradleVersion = '2.6'
 }
@@ -51,6 +54,28 @@ gradle.projectsEvaluated {
                 password = config.server.password
             }
         }
+    }
+}
+
+/**
+ * Synchronize Repository
+ */
+task synchRepo(type: Exec) {
+    //Check for Windows OS
+    if(OperatingSystem.current().isWindows()){
+        commandLine 'cmd', '/c', 'mvn', 'dependency:resolve'
+    }
+    //Check for Linux OS
+    else if(OperatingSystem.current().isLinux()){
+        commandLine './mvn', 'dependency:resolve'
+    }
+    //Check for Mac OS
+    else if(OperatingSystem.current().isMacOsX()){
+        //command for mac
+    }
+    //Check for other OS
+    else{
+        println("No Command configured")
     }
 }
 
