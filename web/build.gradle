@@ -14,13 +14,12 @@ buildscript {
 apply plugin:'jmeter'
 def performanceTestReportDir = file("$buildDir/reports/tests")
 jmeterRun.configure {
-
-    jmeterTestFiles = [ file("$rootDir/web/src/test-performance/resources/com/wipro/test/performanceTestPlan.jmx")]
-    jmeterPropertyFile = file("$rootDir/web/src/test-performance/resources/com/wipro/test/jmeter.properties")
-    // To get the host , port , path list values in jmx file use the ${__P(host)} , ${__P(port)}, ${__P(path)} in the domain , port and path in jmx file.
-    // remove proxy settings in jmx file
-   jmeterUserProperties = ["host="+config.server.hostname,"port="+config.server.port,"path="+appName]
-   reportDir  = performanceTestReportDir
+	jmeterTestFiles = [ file("$rootDir/web/src/test-performance/resources/com/wipro/test/performanceTestPlan.jmx")]
+	jmeterPropertyFile = file("$rootDir/web/src/test-performance/resources/com/wipro/test/jmeter.properties")
+	// To get the host , port , path list values in jmx file use the ${__P(host)} , ${__P(port)}, ${__P(path)} in the domain , port and path in jmx file.
+	// remove proxy settings in jmx file
+	jmeterUserProperties = ["host="+config.server.hostname,"port="+config.server.port,"path="+appName]
+	reportDir  = performanceTestReportDir
 }
 
 project(':web') {
@@ -35,23 +34,24 @@ project(':web') {
 	apply plugin: 'com.bmuschko.cargo'
 
 	repositories {
-		maven {
-			url binaryRepositoryJCenterLocalUrl
+		mavenLocal()
+		/*maven {
+			url jcenterLocalRepoPath
 			credentials {
-				username = binaryRepositoryUserName
-				password = binaryRepositoryPassword
+				username = repoUserName
+				password = repoPassword
 			}
 		}
 		mavenCentral()
 		maven {
-			url binaryRepositoryMavenLocalUrl
+			url mavenLocalRepoPath
 			credentials {
-				username = binaryRepositoryUserName
-				password = binaryRepositoryPassword
+				username = repoUserName
+				password = repoPassword
 			}
 		}
 	    jcenter()	
-		maven { url "http://repo.maven.apache.org/maven2" }
+		maven { url "http://repo.maven.apache.org/maven2" }*/
 	}
 
 	dependencies {
@@ -63,9 +63,9 @@ project(':web') {
 	    compile 'org.seleniumhq.selenium:selenium-java:2.46.0'
         compile 'org.testng:testng:6.8'
 
-        }
+    }
 
-	 sourceSets {
+ 	sourceSets {
 		integrationTest {
 			groovy.srcDir file("src/test-integration/java")
 			resources.srcDir file("src/test-integration/resources")
@@ -107,6 +107,7 @@ project(':web') {
 	pmd {
 		ignoreFailures = true
 	}
+
 	tasks.withType(Pmd) {
 		reports {
 			xml.enabled = false
@@ -121,11 +122,11 @@ project(':web') {
 
 	sonarRunner {
 	    sonarProperties {
-		property "sonar.host.url", sonarHostUrl
-		property "sonar.jdbc.url", sonarJdbcUrl
-		property "sonar.jdbc.driverClassName", sonarJdbcDriverClassName
-		property "sonar.jdbc.username", sonarJdbcUserName
-		property "sonar.jdbc.password", sonarJdbcPassword
+			property "sonar.host.url", sonarHostUrl
+			property "sonar.jdbc.url", sonarJdbcUrl
+			property "sonar.jdbc.driverClassName", sonarJdbcDriverClassName
+			property "sonar.jdbc.username", sonarJdbcUserName
+			property "sonar.jdbc.password", sonarJdbcPassword
 	    }
 	}
 
@@ -136,11 +137,10 @@ project(':web') {
 			}
 		}
 	}
-	
-task myZip(type: Zip) {
-from "$buildDir/reports/tests/"
- 
-}
+		
+	task myZip(type: Zip) {
+		from "$buildDir/reports/tests/"
+	}
 	
 	publishing {
 		publications {
@@ -152,29 +152,29 @@ from "$buildDir/reports/tests/"
 				from components.web
 			}
 			functionalReports(MavenPublication){
-					groupId mavenGroupId
-					artifactId "FunctionalReports"
-					version version
-					artifact(myZip) {
-			       classifier "reports"
-			       }
-			       }
-			 performanceReports(MavenPublication){
-			        groupId mavenGroupId
-					artifactId "PerformanceReports"
-					version version
-					artifact(myZip) {
-			       classifier "reports"
-			       }
-			       }
-			
+				groupId mavenGroupId
+				artifactId "FunctionalReports"
+				version version
+				artifact(myZip) {
+		     	  classifier "reports"
+		       	}
+			}
+			performanceReports(MavenPublication){
+		        groupId mavenGroupId
+				artifactId "PerformanceReports"
+				version version
+				artifact(myZip) {
+		       		classifier "reports"
+		       	}
+			}
 		}
+
 		repositories {
 			maven {
-				url binaryRepositoryReleasesUrl
+				url releasesRepoPath
 				credentials {
-					username = binaryRepositoryUserName
-					password = binaryRepositoryPassword
+					username = repoUserName
+					password = repoPassword
 				}
 			}
 		}
@@ -182,21 +182,24 @@ from "$buildDir/reports/tests/"
 	
 	repositories {
 		maven {
-			url binaryRepositoryReleasesUrl 
+			url releasesRepoPath 
 		}
 	}
+	
 	configurations {
 		downloadWar
 	}
+	
 	println "$mavenGroupId:$appName:$project.version@war"
+	
 	dependencies {		
 		downloadWar ("$mavenGroupId:$appName:$project.version@war"){ 
-			 artifact {
+		 	artifact {
 				name = "$appName"
 				extension = 'war'
 				type = 'war'
 			}
-    		}
+		}
 	}
 
 	task downloadBinaryArchive(type: Copy) {		
@@ -211,12 +214,12 @@ from "$buildDir/reports/tests/"
 	    deployable {
 	    	def fileName = appName+"-"+version
 	    	def filePath = "$buildDir/libs/$fileName"+".war"
-		file = new File ("$buildDir/libs/$fileName"+".war")
-		context = appName
+			file = new File ("$buildDir/libs/$fileName"+".war")
+			context = appName
 	    }
 
 	    local {
-		homeDir = file(config.server.localHomeDir)
+			homeDir = file(config.server.localHomeDir)
 	    }
 	}
 
@@ -226,7 +229,6 @@ from "$buildDir/reports/tests/"
 		group = 'verification'
 		testClassesDir = sourceSets.integrationTest.output.classesDir
 		classpath = sourceSets.integrationTest.runtimeClasspath
-		
 	}
 
 	//Performance Test
@@ -243,9 +245,8 @@ from "$buildDir/reports/tests/"
 		classpath = sourceSets.functionalTest.runtimeClasspath
 		systemProperty 'url', "$config.server.hostname:$config.server.port/$appName/"
 		useTestNG(){
-        suites 'src/test-functional/resources/testing.xml'
-    }
-
+        	suites 'src/test-functional/resources/testing.xml'
+    	}
 	}
 }
 

@@ -17,15 +17,15 @@ ext.config = parsedConfig
 buildscript {
     repositories {
         mavenLocal()
-	/*maven {
-		url binaryRepositoryJCenterLocalUrl
-		credentials {
-			username = binaryRepositoryUserName
-			password = binaryRepositoryPassword
-		}
-	}
-	//jcenter()
-     mavenCentral()*/
+    	/*maven {
+    		url binaryRepositoryJCenterLocalUrl
+    		credentials {
+    			username = binaryRepositoryUserName
+    			password = binaryRepositoryPassword
+    		}
+    	}
+    	//jcenter()
+         mavenCentral()*/
     }
 
     dependencies {
