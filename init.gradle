@@ -18,7 +18,7 @@ allprojects {
     	}
     	//Check for Linux OS
     	else if(OperatingSystem.current().isLinux()){
-    		commandLine './mvn', 'compile'
+    		commandLine './mvn', 'dependency:resolve'
 		}
 		//Check for Mac OS
 		else if(OperatingSystem.current().isMacOsX()){
