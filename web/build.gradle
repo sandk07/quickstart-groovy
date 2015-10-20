@@ -248,6 +248,7 @@ project(':web') {
         	suites 'src/test-functional/resources/testing.xml'
     	}
 	}
+	
 }
 
 
