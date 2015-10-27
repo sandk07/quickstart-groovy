@@ -14,7 +14,7 @@ public class HomePageTestClass {
 		driver.get(System.getProperty("url"));
 
 		driver.findElement(By.xpath("//input [@name='fname']")).sendKeys(
-				"Java");
+				"Groovy");
 		driver.findElement(By.xpath("//input [@name='lname']")).sendKeys(
 				"Quickstarter");
 		
@@ -22,7 +22,7 @@ public class HomePageTestClass {
 
 		WebElement e1 = driver.findElement(By.xpath("//div [@id='output']"));
 
-		String expectedName = "Java Quickstarter";
+		String expectedName = "Groovy Quickstarter";
 
 		try {
 			Assert.assertEquals(e1.getText(), expectedName);
